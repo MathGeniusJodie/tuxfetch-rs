@@ -19,23 +19,23 @@ const ALPINE : [&str; 7] = [
 ];
 
 const ARCH : [&str; 7] = [
-    "\x1b[31m        A         ",
-    "\x1b[31m       a8s        ",
-    "\x1b[33m      ao88s       ",
-    "\x1b[32m     a88888s      ",
-    "\x1b[36m    a88Y*Y88s     ",
-    "\x1b[34m   a88H   B8bs    ",
-    "\x1b[35m  /*`       `*\\   "
+    "\x1b[31m        A        \x1b[37m",
+    "\x1b[31m       a8s       \x1b[37m",
+    "\x1b[33m      ao88s      \x1b[37m",
+    "\x1b[32m     a88888s     \x1b[37m",
+    "\x1b[36m    a88Y*Y88s    \x1b[37m",
+    "\x1b[34m   a88H   B8bs   \x1b[37m",
+    "\x1b[35m  /*`       `*\\  \x1b[37m"
 ];
 
 const DEBIAN : [&str; 7] = [
-    "\x1b[31m    ,gA88bq.   ",
-    "\x1b[33m   dP      `9. ",
-    "\x1b[32m  d7  ,*`.  )8 ",
-    "\x1b[36m  9:  A    ,Q* ",
-    "\x1b[34m  *1  `^vsv\"   ",
-    "\x1b[35m   *b          ",
-    "\x1b[35m     \"~.       "
+    "\x1b[31m    ,gA88bq.     \x1b[37m",
+    "\x1b[33m   dP      `9.   \x1b[37m",
+    "\x1b[32m  d7  ,*`.  )8   \x1b[37m",
+    "\x1b[36m  9:  A    ,Q*   \x1b[37m",
+    "\x1b[34m  *1  `^vsv\"     \x1b[37m",
+    "\x1b[35m   *b            \x1b[37m",
+    "\x1b[35m     \"~.         \x1b[37m"
 ];
 
 const UBUNTU : [&str; 7] = [
@@ -79,7 +79,6 @@ fn main() {
         }
     };
 
-    //construct string with 1 tux line, then pad, then the info
     let output = " ".repeat(17) + &user + "@" + &host + "\n" +
                  art[0] + "Distro: " + &distro + "\n" +
                  art[1] + "Kernel: " + &kernel + "\n" +
