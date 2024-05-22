@@ -54,12 +54,36 @@ fn main() {
     let distro = nixinfo::distro().unwrap_or("Unknown".to_string());
     let kernel = nixinfo::kernel().unwrap_or("Unknown".to_string());
     let uptime = nixinfo::uptime().unwrap_or("Unknown".to_string());
-    let packages = nixinfo::packages("apt").unwrap_or(nixinfo::packages("pacman").unwrap_or(nixinfo::packages("apk").unwrap_or("Unknown".to_string())));
     let shell = std::env::var("SHELL").unwrap_or("Unknown".to_string());
     let terminal = nixinfo::terminal().unwrap_or("Unknown".to_string());
     let cpu = nixinfo::cpu().unwrap_or("Unknown".to_string());
     let gpu = nixinfo::gpu().unwrap_or("Unknown".to_string());
     let memory = nixinfo::memory().unwrap_or("Unknown".to_string());
+
+    let mut packages = "".to_string();
+    match nixinfo::packages("apt") {
+        Ok(p) => {
+            packages += &p;
+            packages += " (apt) ";
+        }
+        Err(_) => {}
+    }
+    match nixinfo::packages("pacman") {
+        Ok(p) => {
+            packages += &p;
+            packages += " (pacman) ";
+        }
+        Err(_) => {}
+    }
+    match nixinfo::packages("apk") {
+        Ok(p) => {
+            packages += &p;
+            packages += " (apk) ";
+        }
+        Err(_) => {}
+    }
+
+    //todo: flatpak, snap, etc
 
     let art = {
         if distro.contains("Ubuntu") {
