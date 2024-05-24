@@ -70,6 +70,28 @@ fn fetch_packages_apk() -> Result<String, std::io::Error> {
 
     Ok(packages.to_string())
 }
+fn fetch_packages_apt() -> Result<String, std::io::Error> {
+    let buf = std::fs::read("/var/lib/dpkg/status")?;
+    let mut packages = 0;
+	let buf0 = &buf[..buf.len()-1];
+	let buf1 = &buf[1..];
+	let mut chunks0 = buf0.chunks_exact(512);
+	let mut chunks1 = buf1.chunks_exact(512);
+
+	while let (Some(chunk0), Some(chunk1)) = (chunks0.next(), chunks1.next()) {
+		let mut counter = 0;
+		for j in 0..512 {
+			counter += (chunk0[j] == b'\n') as u8 & (chunk1[j] == b'I') as u8;
+		}
+		packages += counter as usize;
+	}
+
+	for (a,b) in chunks0.remainder().iter().zip(chunks1.remainder()) {
+		packages += (*a == b'\n') as usize & (*b == b'I') as usize;
+	}
+
+    Ok(packages.to_string())
+}
 
 fn main() {
     let user = std::env::var("LOGNAME").unwrap_or("Unknown".to_string());
@@ -84,7 +106,7 @@ fn main() {
     let memory = nixinfo::memory().unwrap_or("Unknown".to_string());
 
     let mut packages = "".to_string();
-    match nixinfo::packages("apt") {
+    match fetch_packages_apt() {
         Ok(p) => {
             packages += &p;
             packages += " (apt) ";
