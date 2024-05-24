@@ -48,6 +48,29 @@ const UBUNTU : [&str; 7] = [
     "\x1b[31m          \x1b[33m($)    \x1b[37m"
 ];
 
+fn fetch_packages_apk() -> Result<String, std::io::Error> {
+    let buf = std::fs::read("/lib/apk/db/installed")?;
+	let mut packages = 0;
+	let buf0 = &buf[..buf.len()-1];
+	let buf1 = &buf[1..];
+	let mut chunks0 = buf0.chunks_exact(512);
+	let mut chunks1 = buf1.chunks_exact(512);
+
+	while let (Some(chunk0), Some(chunk1)) = (chunks0.next(), chunks1.next()) {
+		let mut counter = 0;
+		for j in 0..512 {
+			counter += (chunk0[j] == b'\n') as u8 & (chunk1[j] == b'P') as u8;
+		}
+		packages += counter as usize;
+	}
+
+	for (a,b) in chunks0.remainder().iter().zip(chunks1.remainder()) {
+		packages += (*a == b'\n') as usize & (*b == b'P') as usize;
+	}
+
+    Ok(packages.to_string())
+}
+
 fn main() {
     let user = std::env::var("LOGNAME").unwrap_or("Unknown".to_string());
     let host = nixinfo::hostname().unwrap_or("Unknown".to_string());
@@ -75,7 +98,7 @@ fn main() {
         }
         Err(_) => {}
     }
-    match nixinfo::packages("apk") {
+    match fetch_packages_apk() {
         Ok(p) => {
             packages += &p;
             packages += " (apk) ";
