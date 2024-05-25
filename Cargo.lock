@@ -9,6 +9,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d2fabcfbdc87f4758337ca535fb41a6d701b65693ce38287d856d1674551ec9b"
 
 [[package]]
+name = "libc"
+version = "0.2.155"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "97b3888a4aecf77e811145cadf6eef5901f4782c53886191b2f693f24761847c"
+
+[[package]]
 name = "nixinfo"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -21,5 +27,6 @@ dependencies = [
 name = "tuxfetch"
 version = "0.1.0"
 dependencies = [
+ "libc",
  "nixinfo",
 ]

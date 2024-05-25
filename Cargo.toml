@@ -7,3 +7,4 @@ edition = "2021"
 
 [dependencies]
 nixinfo = "0.3.3"
+libc = "0.2.155"
