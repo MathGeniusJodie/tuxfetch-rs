@@ -1,5 +1,6 @@
 use std::io::{self, BufRead};
 use std::ffi::CStr;
+use std::num;
 
 use libc::{utsname, c_char};
 
@@ -170,8 +171,30 @@ fn lines_find(
 }
 
 pub fn gpu() -> Result<String, std::io::Error> {
-    let mut vendor = std::fs::read("/sys/class/drm/card0/device/vendor")?;
-    let mut device = std::fs::read("/sys/class/drm/card0/device/device")?;
+
+    // Find the first /sys/class/drm/card*/device folder that exists
+    let mut found = None;
+    for num in 0..10 {
+        let base = format!("/sys/class/drm/card{}/device", num);
+        if std::path::Path::new(&base).exists() {
+            found = Some(base);
+            break;
+        }
+    }
+    let base = match found {
+        Some(b) => b,
+        None => return Ok("Unknown".to_string()),
+    };
+
+    let mut vendor = match std::fs::read(format!("{}/vendor", base)) {
+        Ok(v) => v,
+        Err(_) => return Ok("Unknown".to_string()),
+    };
+
+    let mut device = match std::fs::read(format!("{}/device", base)) {
+        Ok(d) => d,
+        Err(_) => return Ok("Unknown".to_string()),
+    };
 
     if let Some(file) = open_pci_ids() {
         let mut reader = io::BufReader::new(file);
