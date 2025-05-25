@@ -1,6 +1,5 @@
 use std::ffi::CStr;
 use std::io::{self, BufRead};
-use std::num;
 
 use libc::{c_char, utsname};
 
