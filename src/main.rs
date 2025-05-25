@@ -197,6 +197,8 @@ pub fn gpu() -> Result<String, std::io::Error> {
         Err(_) => return Ok("Unknown".to_string()),
     };
 
+    // todo: hardcode some common gpus with prettier names
+
     if let Some(file) = open_pci_ids() {
         let mut reader = io::BufReader::new(file);
 
